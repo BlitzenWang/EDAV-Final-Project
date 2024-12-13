@@ -1,1 +1,103 @@
+---
+title: "Results"
+---
 # Results
+
+
+## Gender Differences in Exhaustion and Engagement
+
+To understand how burnout differs across genders, we compare the `Exhaustion` and `Engagement` scores.
+
+```{r}
+# Import libraries
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+cleaned_data <- read.csv("OBI_cleaned.csv")
+
+# Boxplot for Exhaustion by Gender
+ggplot(cleaned_data, aes(x = as.factor(Gender), y = Exhaustion, fill = as.factor(Gender))) +
+  geom_boxplot() +
+  labs(title = "Exhaustion Scores by Gender",
+       x = "Gender",
+       y = "Exhaustion Score",
+       fill = "Gender") +
+  theme_minimal()
+
+# Boxplot for Engagement by Gender
+ggplot(cleaned_data, aes(x = as.factor(Gender), y = Engagement, fill = as.factor(Gender))) +
+  geom_boxplot() +
+  labs(title = "Engagement Scores by Gender",
+       x = "Gender",
+       y = "Engagement Score",
+       fill = "Gender") +
+  theme_minimal()
+```
+### Analysis
+The boxplot for Engagement shows minimal differences between genders. We perform two-sample t-test to verify:
+
+```{r}
+t_test_engagement <- t.test(Engagement ~ Gender, data = cleaned_data)
+t_test_engagement
+```
+**Results**:
+Since the p-value is greater than 0.05, we fail to reject the null hypothesis, indicating no significant difference in Engagement scores between the 2 genders.
+
+
+
+```{r}
+# Interaction plot: Average Exhaustion by Age and Gender
+summary <- cleaned_data %>%
+  group_by(Age, Gender) %>%
+  summarize(Avg_Exhaustion = mean(Exhaustion, na.rm = TRUE),
+            Avg_Engagement = mean(Engagement, na.rm = TRUE))
+
+ggplot(summary, aes(x = Age, y = Avg_Exhaustion, group = as.factor(Gender), color = as.factor(Gender))) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  labs(title = "Exhaustion by Age and Gender",
+       x = "Age",
+       y = "Average Exhaustion Score",
+       color = "Gender") +
+  theme_minimal()
+
+ggplot(summary, aes(x = Age, y = Avg_Engagement, group = as.factor(Gender), color = as.factor(Gender))) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  labs(title = "Exhaustion by Age and Gender",
+       x = "Age",
+       y = "Average Exhaustion Score",
+       color = "Gender") +
+  theme_minimal()
+
+```
+### Analysis
+The interaction plot shows that Exhaustion scores vary significantly across different ages for both genders. Notable observations:
+
+..* Peaks occur at early and late career stages, possibly reflecting life and career pressures.
+..* Gender differences are minimal overall, but specific age groups (e.g., late 20s, late 60s) exhibit noticeable differences.
+
+
+```{r}
+
+# Grouped bar plot: Average Engagement by Age and Gender
+ggplot(summary, aes(x = Age, y = Avg_Engagement, fill = as.factor(Gender))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Engagement by Age and Gender",
+       x = "Age",
+       y = "Average Engagement Score",
+       fill = "Gender") +
+  theme_minimal()
+```
+### Analysis
+The grouped bar plot provides some additional insights:
+
+..* Engagement levels are relatively consistent across most ages but peak in younger participants.
+..* Differences between genders are more significant in specific age groups, such as late 20s and 70+.
+..* The variability in older age groups warrants further investigation, possibly due to life transitions or small sample sizes.
+
+```{r}
+write.csv(summary, "summary_results.csv", row.names = FALSE)
+```
+

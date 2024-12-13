@@ -1,6 +1,69 @@
+---
+title: "Data"
+---
+
 # Data
 
-## Description
+## Technical Description
 
-## Missing value analysis
-s
+The dataset comprises responses from 617 Greek employees to the Oldenburg Burnout Inventory (OBI) survey. Each respondent's burnout is assessed across two key dimensions: exhaustion and disengagement. The dataset includes variables that are either positively or negatively keyed, with higher scores on negatively keyed items indicating greater exhaustion or disengagement.
+
+To facilitate analysis, we created two new variables:
+- **Exhaustion Score**: A composite score representing the exhaustion dimension, calculated by summing the responses to the negatively keyed questions (Q2, Q3, Q4, Q6, Q8, Q9, Q11, Q12).
+- **Engagement Score**: A composite score representing the engagement dimension, calculated by summing the responses to the positively keyed questions.
+
+Additionally, we categorized the `Age` variable into four groups:
+- **Below 25**, **26-35**, **36-45**, and **Above 45**.
+
+The data is provided in CSV format and imported using R for cleaning, transformation, and analysis.
+
+## Missing Value Analysis
+
+An initial inspection of the dataset revealed no significant patterns of missing data, ensuring that the analysis would not be compromised by data gaps. Any rows with missing values were removed to maintain consistency.
+
+```{r}
+# Load necessary library
+library(dplyr)
+
+# Read the dataset
+burnout_data <- read.csv("OBI.csv")
+
+# Check for missing values
+sum(is.na(burnout_data))
+
+# Remove rows with missing values
+burnout_data <- burnout_data %>%
+  filter(complete.cases(.))
+```
+
+## Creation of New Variables
+
+To quantify burnout dimensions, we created the **Exhaustion** and **Engagement** scores. Negatively keyed questions were reverse coded to align their scale, ensuring consistency across variables.
+
+Additionally, we converted the `Age` column, which records the birth year of the subjects, into their actual age by subtracting the birth year from the current year (2024). The resulting `Age` variable was then categorized into four groups.
+
+```{r}
+# Calculate new variables
+burnout_data$Exhaustion <- rowSums(burnout_data[, c("olbi2", "olbi3", "olbi4", "olbi6", "olbi8", "olbi9", "olbi11", "olbi12")])
+positive_questions <- c("olbi1", "olbi5", "olbi7", "olbi10", "olbi13", "olbi14", "olbi15", "olbi16")
+burnout_data$Engagement <- rowSums(burnout_data[, positive_questions])
+
+# Convert birth year to age
+burnout_data$Age <- 2022 - burnout_data$Age
+
+# Create age groups
+burnout_data$Age_Group <- cut(
+  burnout_data$Age,
+  breaks = c(-Inf, 25, 35, 45, Inf),
+  labels = c("Below 25", "26-35", "36-45", "Above 45")
+)
+
+cleaned_data <- burnout_data[, c("Age", "Gender", "Exhaustion", "Engagement")]
+head(cleaned_data)
+```
+
+```{r}
+write.csv(cleaned_data,"OBI_cleaned.csv", row.names = FALSE)
+```
+
+

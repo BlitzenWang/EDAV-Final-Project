@@ -1,1 +1,48 @@
+---
+title: "Conclusion"
+---
+
 # Conclusion
+
+## Summary of Findings
+
+In this project, we analyzed burnout patterns among Greek employees using the Oldenburg Burnout Inventory (OBI). By focusing on two key dimensions—`Exhaustion` and `Engagement`—we explored the trends across gender and age groups. Here are the findings:
+
+1. **Gender Differences**:
+   - There were no significant differences in average `Exhaustion` or `Engagement` scores between genders.
+   - T-test proved our observation of the box plots, supporting the claim that there's no significant difference between the two gender groups.
+
+2. **Age Trends**:
+   - `Exhaustion` scores varied significantly across age groups, with noticeable peaks during early and late career stages. These patterns may reflect external stress sources, such as early career pressures or pre-retirement challenges.
+   - `Engagement` scores were generally stable but showed higher levels in younger age groups (specifically early 30s) and some fluctuations in older groups
+
+3. **Combined Effects**:
+   - Interaction plots again displays a lack of gender-based differences within most age groups. However, specific age ranges, such as late 20s and early 70s, exhibited distinct patterns, which can be a topic for further investigation.
+
+---
+
+## Implications
+
+The findings can be useful with different applications:
+- **Targeted Interventions**:
+  - Younger employees might benefit from additional support, such as psychiatric sessions or stress management programs.
+  - Older employees could benefit from tailored workplace policies, addressing work-life balance.
+- **Gender-Inclusive Strategies**:
+  - Since no significant gender differences were identified, organizations can prioritize policies that target burnout as a universal issue instead of gender specific policies.
+
+---
+
+## Limitations and Future Work
+
+### Limitations:
+- The dataset is limited to Greek employees only, which may restrict the generalizability of findings to other populations or cultural contexts.
+- The analysis is based on survey responses, which means that self-reporting bias may be a problem.
+- Certain age groups, particularly older employees, may have fewer data points, influencing the reliability of trends.
+
+### Future Work:
+- **Expanded Dataset**: Include data from other countries or industries to gain a broader understanding of burnout patterns.
+- **Additional Factors**: Incorporate variables like job role, work hours, or organizational policies to explore deeper relationships.
+- **Temporal Analysis**: Examine burnout trends over time to identify changes or patterns related to external events (economic shifts, tec.).
+
+---
+

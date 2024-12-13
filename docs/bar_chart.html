@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grouped Bar Chart: Engagement by Age and Gender</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tooltip {
+            position: absolute;
+            padding: 5px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            pointer-events: none;
+        }
+        .bar {
+            fill-opacity: 0.8;
+        }
+        .bar:hover {
+            fill-opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Grouped Bar Chart: Engagement by Age and Gender</h1>
+    <div id="bar-chart"></div>
+    <script>
+        const marginBar = { top: 40, right: 20, bottom: 50, left: 60 };
+        const widthBar = 800 - marginBar.left - marginBar.right;
+        const heightBar = 500 - marginBar.top - marginBar.bottom;
+
+        const svgBar = d3.select("#bar-chart")
+            .append("svg")
+            .attr("width", widthBar + marginBar.left + marginBar.right)
+            .attr("height", heightBar + marginBar.top + marginBar.bottom)
+            .append("g")
+            .attr("transform", `translate(${marginBar.left},${marginBar.top})`);
+
+        const tooltipBar = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        d3.csv("summary_results.csv").then(data => {
+            data.forEach(d => {
+                d.Age = +d.Age;
+                d.Avg_Engagement = +d.Avg_Engagement;
+            });
+
+            const x0 = d3.scaleBand()
+                .domain(data.map(d => d.Age))
+                .range([0, widthBar])
+                .padding(0.2);
+
+            const x1 = d3.scaleBand()
+                .domain(["1", "2"])
+                .range([0, x0.bandwidth()])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Avg_Engagement)])
+                .range([heightBar, 0]);
+
+            const color = d3.scaleOrdinal()
+                .domain(["1", "2"])
+                .range(["steelblue", "tomato"]);
+
+            svgBar.append("g")
+                .attr("transform", `translate(0,${heightBar})`)
+                .call(d3.axisBottom(x0).tickFormat(d3.format("d")));
+
+            svgBar.append("g").call(d3.axisLeft(y));
+
+            const ageGroups = d3.groups(data, d => d.Age);
+
+            svgBar.selectAll(".age-group")
+                .data(ageGroups)
+                .enter()
+                .append("g")
+                .attr("transform", d => `translate(${x0(d[0])},0)`)
+                .selectAll(".bar")
+                .data(d => d[1])
+                .enter()
+                .append("rect")
+                .attr("x", d => x1(d.Gender))
+                .attr("y", d => y(d.Avg_Engagement))
+                .attr("width", x1.bandwidth())
+                .attr("height", d => heightBar - y(d.Avg_Engagement))
+                .attr("fill", d => color(d.Gender))
+                .on("mouseover", (event, d) => {
+                    tooltipBar.transition().duration(200).style("opacity", 1);
+                    tooltipBar.html(`Age: ${d.Age}<br>Engagement: ${d.Avg_Engagement}<br>Gender: ${d.Gender}`)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 10) + "px");
+                })
+                .on("mouseout", () => tooltipBar.transition().duration(200).style("opacity", 0));
+        });
+    </script>
+</body>
+</html>

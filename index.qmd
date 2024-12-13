@@ -1,1 +1,7 @@
+---
+title: "Introduction"
+---
+
 # Introduction
+
+Workplace burnout is a topic that's gathering attention worldwide as a factor that can impact productivity and employees' mental status. In Greece, the situation is no different, as employees face increasing demands and pressures in their work environment. To better understand burnout in this analysis, we will use the Oldenburg Burnout Inventory (OBI)  as a validated measure that captures two critical dimensions of burnout: exhaustion and disengagement. In this study, we analyze responses from 617 Greek employees who had completed the OBI survey. By focusing on the patterns of exhaustion and engagement across different genders and age groups, we aim to discover meaningful insights in exmployees' experience within these demographics. These findings can provide useful guidance for alternating work environments for the well-being of employees.

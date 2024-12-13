@@ -1,13 +1,10 @@
-# Interactive graph
+# D3 Visualizations
 
-<style>
-  * {
-    font-family: sans-serif;
-  }
-</style> 
+This section presents two interactive visualizations created using D3.js:
 
-<div id="plot">
-</div>
+1. **Line Chart**: Displays `Exhaustion` scores by age and gender.
+2. **Grouped Bar Chart**: Illustrates `Engagement` scores by age and gender.
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="scripts/myscript.js"></script>
+```{=html}
+<iframe src="line_chart.html" width="100%" height="600px" frameborder="0"></iframe>
+<iframe src="bar_chart.html" width="100%" height="600px" frameborder="0"></iframe>

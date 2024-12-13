@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line Chart: Exhaustion by Age and Gender</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tooltip {
+            position: absolute;
+            padding: 5px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            pointer-events: none;
+        }
+        .line {
+            fill: none;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Line Chart: Exhaustion by Age and Gender</h1>
+    <div id="line-chart"></div>
+    <script>
+        const margin = { top: 40, right: 20, bottom: 50, left: 60 };
+        const width = 800 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
+
+        const svgLine = d3.select("#line-chart")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const tooltipLine = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        d3.csv("summary_results.csv").then(data => {
+            data.forEach(d => {
+                d.Age = +d.Age;
+                d.Avg_Exhaustion = +d.Avg_Exhaustion;
+            });
+            console.log("Loaded data:", data);
+
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.Age))
+                .range([0, width]);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Avg_Exhaustion)])
+                .range([height, 0]);
+
+            const colorScale = d3.scaleOrdinal()
+                .domain(["1", "2"])
+                .range(["steelblue", "tomato"]);
+
+            svgLine.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(xScale));
+
+            svgLine.append("g").call(d3.axisLeft(yScale));
+
+            const line = d3.line()
+                .x(d => xScale(d.Age))
+                .y(d => yScale(d.Avg_Exhaustion));
+
+            const genders = d3.groups(data, d => d.Gender);
+
+            genders.forEach(([gender, values]) => {
+                svgLine.append("path")
+                    .datum(values)
+                    .attr("class", "line")
+                    .attr("fill", "none")
+                    .attr("stroke", colorScale(gender))
+                    .attr("d", line);
+
+                svgLine.selectAll(`.dot-${gender}`)
+                    .data(values)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", d => xScale(d.Age))
+                    .attr("cy", d => yScale(d.Avg_Exhaustion))
+                    .attr("r", 5)
+                    .attr("fill", colorScale(gender))
+                    .on("mouseover", (event, d) => {
+                        tooltipLine.transition().duration(200).style("opacity", 1);
+                        tooltipLine.html(`Age: ${d.Age}<br>Exhaustion: ${d.Avg_Exhaustion}<br>Gender: ${d.Gender}`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 10) + "px");
+                    })
+                    .on("mouseout", () => tooltipLine.transition().duration(200).style("opacity", 0));
+            });
+        });
+    </script>
+</body>
+</html>

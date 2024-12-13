@@ -4,7 +4,10 @@
     "href": "index.html",
     "title": "YOUR PROJECT TITLE",
     "section": "",
-    "text": "1 Introduction"
+    "text": "1 Introduction\nWorkplace burnout is a topic that’s gathering attention worldwide as a factor that can impact productivity and employees’ mental status. In Greece, the situation is no different, as employees face increasing demands and pressures in their work environment. To better understand burnout in this analysis, we will use the Oldenburg Burnout Inventory (OBI) as a validated measure that captures two critical dimensions of burnout: exhaustion and disengagement. In this study, we analyze responses from 617 Greek employees who had completed the OBI survey. By focusing on the patterns of exhaustion and engagement across different genders and age groups, we aim to discover meaningful insights in exmployees’ experience within these demographics. These findings can provide useful guidance for alternating work environments for the well-being of employees.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
   },
   {
     "objectID": "data.html#description",
@@ -17,7 +20,110 @@
     "objectID": "data.html#missing-value-analysis",
     "href": "data.html#missing-value-analysis",
     "title": "2  Data",
-    "section": "2.2 Missing value analysis",
-    "text": "2.2 Missing value analysis"
+    "section": "3.2 Missing Value Analysis",
+    "text": "3.2 Missing Value Analysis\nAn initial inspection of the dataset revealed no significant patterns of missing data, ensuring that the analysis would not be compromised by data gaps. Any rows with missing values were removed to maintain consistency.\n\n\nCode\n# Load necessary library\nlibrary(dplyr)\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\n\nCode\n# Read the dataset\nburnout_data &lt;- read.csv(\"OBI.csv\")\n\n# Check for missing values\nsum(is.na(burnout_data))\n\n\n[1] 50\n\n\nCode\n# Remove rows with missing values\nburnout_data &lt;- burnout_data %&gt;%\n  filter(complete.cases(.))",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
+    ]
+  },
+  {
+    "objectID": "data.html",
+    "href": "data.html",
+    "title": "2  Data",
+    "section": "",
+    "text": "3 Data",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
+    ]
+  },
+  {
+    "objectID": "data.html#technical-description",
+    "href": "data.html#technical-description",
+    "title": "2  Data",
+    "section": "3.1 Technical Description",
+    "text": "3.1 Technical Description\nThe dataset comprises responses from 617 Greek employees to the Oldenburg Burnout Inventory (OBI) survey. Each respondent’s burnout is assessed across two key dimensions: exhaustion and disengagement. The dataset includes variables that are either positively or negatively keyed, with higher scores on negatively keyed items indicating greater exhaustion or disengagement.\nTo facilitate analysis, we created two new variables: - Exhaustion Score: A composite score representing the exhaustion dimension, calculated by summing the responses to the negatively keyed questions (Q2, Q3, Q4, Q6, Q8, Q9, Q11, Q12). - Engagement Score: A composite score representing the engagement dimension, calculated by summing the responses to the positively keyed questions.\nAdditionally, we categorized the Age variable into four groups: - Below 25, 26-35, 36-45, and Above 45.\nThe data is provided in CSV format and imported using R for cleaning, transformation, and analysis.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
+    ]
+  },
+  {
+    "objectID": "data.html#creation-of-new-variables",
+    "href": "data.html#creation-of-new-variables",
+    "title": "2  Data",
+    "section": "3.3 Creation of New Variables",
+    "text": "3.3 Creation of New Variables\nTo quantify burnout dimensions, we created the Exhaustion and Engagement scores. Negatively keyed questions were reverse coded to align their scale, ensuring consistency across variables.\nAdditionally, we converted the Age column, which records the birth year of the subjects, into their actual age by subtracting the birth year from the current year (2024). The resulting Age variable was then categorized into four groups.\n\n\nCode\n# Calculate new variables\nburnout_data$Exhaustion &lt;- rowSums(burnout_data[, c(\"olbi2\", \"olbi3\", \"olbi4\", \"olbi6\", \"olbi8\", \"olbi9\", \"olbi11\", \"olbi12\")])\npositive_questions &lt;- c(\"olbi1\", \"olbi5\", \"olbi7\", \"olbi10\", \"olbi13\", \"olbi14\", \"olbi15\", \"olbi16\")\nburnout_data$Engagement &lt;- rowSums(burnout_data[, positive_questions])\n\n# Convert birth year to age\nburnout_data$Age &lt;- 2022 - burnout_data$Age\n\n# Create age groups\nburnout_data$Age_Group &lt;- cut(\n  burnout_data$Age,\n  breaks = c(-Inf, 25, 35, 45, Inf),\n  labels = c(\"Below 25\", \"26-35\", \"36-45\", \"Above 45\")\n)\n\ncleaned_data &lt;- burnout_data[, c(\"Age\", \"Gender\", \"Exhaustion\", \"Engagement\")]\nhead(cleaned_data)\n\n\n  Age Gender Exhaustion Engagement\n1  54      1         24         19\n2  48      1         14         24\n3  43      1         23         12\n4  47      1         23         12\n5  34      1         25         16\n6  45      2         28         11\n\n\n\n\nCode\nwrite.csv(cleaned_data,\"OBI_cleaned.csv\", row.names = FALSE)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
+    ]
+  },
+  {
+    "objectID": "results.html",
+    "href": "results.html",
+    "title": "3  Results",
+    "section": "",
+    "text": "4 Results",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Results</span>"
+    ]
+  },
+  {
+    "objectID": "results.html#gender-differences-in-exhaustion-and-engagement",
+    "href": "results.html#gender-differences-in-exhaustion-and-engagement",
+    "title": "3  Results",
+    "section": "4.1 Gender Differences in Exhaustion and Engagement",
+    "text": "4.1 Gender Differences in Exhaustion and Engagement\nTo understand how burnout differs across genders, we compare the Exhaustion and Engagement scores.\n\n\nCode\n# Import libraries\nlibrary(ggplot2)\nlibrary(tidyr)\nlibrary(dplyr)\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\n\nCode\ncleaned_data &lt;- read.csv(\"OBI_cleaned.csv\")\n\n# Boxplot for Exhaustion by Gender\nggplot(cleaned_data, aes(x = as.factor(Gender), y = Exhaustion, fill = as.factor(Gender))) +\n  geom_boxplot() +\n  labs(title = \"Exhaustion Scores by Gender\",\n       x = \"Gender\",\n       y = \"Exhaustion Score\",\n       fill = \"Gender\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\n# Boxplot for Engagement by Gender\nggplot(cleaned_data, aes(x = as.factor(Gender), y = Engagement, fill = as.factor(Gender))) +\n  geom_boxplot() +\n  labs(title = \"Engagement Scores by Gender\",\n       x = \"Gender\",\n       y = \"Engagement Score\",\n       fill = \"Gender\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n4.1.1 Analysis\nThe boxplot for Engagement shows minimal differences between genders. We perform two-sample t-test to verify:\n\n\nCode\nt_test_engagement &lt;- t.test(Engagement ~ Gender, data = cleaned_data)\nt_test_engagement\n\n\n\n    Welch Two Sample t-test\n\ndata:  Engagement by Gender\nt = -1.1834, df = 566.8, p-value = 0.2371\nalternative hypothesis: true difference in means between group 1 and group 2 is not equal to 0\n95 percent confidence interval:\n -0.9792941  0.2429166\nsample estimates:\nmean in group 1 mean in group 2 \n       16.16491        16.53310 \n\n\nResults: Since the p-value is greater than 0.05, we fail to reject the null hypothesis, indicating no significant difference in Engagement scores between the 2 genders.\n\n\nCode\n# Interaction plot: Average Exhaustion by Age and Gender\nsummary &lt;- cleaned_data %&gt;%\n  group_by(Age, Gender) %&gt;%\n  summarize(Avg_Exhaustion = mean(Exhaustion, na.rm = TRUE),\n            Avg_Engagement = mean(Engagement, na.rm = TRUE))\n\n\n`summarise()` has grouped output by 'Age'. You can override using the `.groups`\nargument.\n\n\nCode\nggplot(summary, aes(x = Age, y = Avg_Exhaustion, group = as.factor(Gender), color = as.factor(Gender))) +\n  geom_line(size = 1.2) +\n  geom_point(size = 3) +\n  labs(title = \"Exhaustion by Age and Gender\",\n       x = \"Age\",\n       y = \"Average Exhaustion Score\",\n       color = \"Gender\") +\n  theme_minimal()\n\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n\n\n\n\n\n\n\nCode\nggplot(summary, aes(x = Age, y = Avg_Engagement, group = as.factor(Gender), color = as.factor(Gender))) +\n  geom_line(size = 1.2) +\n  geom_point(size = 3) +\n  labs(title = \"Exhaustion by Age and Gender\",\n       x = \"Age\",\n       y = \"Average Exhaustion Score\",\n       color = \"Gender\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n4.1.2 Analysis\nThe interaction plot shows that Exhaustion scores vary significantly across different ages for both genders. Notable observations:\n..* Peaks occur at early and late career stages, possibly reflecting life and career pressures. ..* Gender differences are minimal overall, but specific age groups (e.g., late 20s, late 60s) exhibit noticeable differences.\n\n\nCode\n# Grouped bar plot: Average Engagement by Age and Gender\nggplot(summary, aes(x = Age, y = Avg_Engagement, fill = as.factor(Gender))) +\n  geom_bar(stat = \"identity\", position = \"dodge\") +\n  labs(title = \"Engagement by Age and Gender\",\n       x = \"Age\",\n       y = \"Average Engagement Score\",\n       fill = \"Gender\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n4.1.3 Analysis\nThe grouped bar plot provides some additional insights:\n..* Engagement levels are relatively consistent across most ages but peak in younger participants. ..* Differences between genders are more significant in specific age groups, such as late 20s and 70+. ..* The variability in older age groups warrants further investigation, possibly due to life transitions or small sample sizes.\n\n\nCode\nwrite.csv(summary, \"summary_results.csv\", row.names = FALSE)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Results</span>"
+    ]
+  },
+  {
+    "objectID": "d3graph.html",
+    "href": "d3graph.html",
+    "title": "4  D3 Visualizations",
+    "section": "",
+    "text": "This section presents two interactive visualizations created using D3.js:\n\nLine Chart: Displays Exhaustion scores by age and gender.\nGrouped Bar Chart: Illustrates Engagement scores by age and gender.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>D3 Visualizations</span>"
+    ]
+  },
+  {
+    "objectID": "conclusion.html",
+    "href": "conclusion.html",
+    "title": "5  Conclusion",
+    "section": "",
+    "text": "6 Conclusion",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conclusion</span>"
+    ]
+  },
+  {
+    "objectID": "conclusion.html#summary-of-findings",
+    "href": "conclusion.html#summary-of-findings",
+    "title": "5  Conclusion",
+    "section": "6.1 Summary of Findings",
+    "text": "6.1 Summary of Findings\nIn this project, we analyzed burnout patterns among Greek employees using the Oldenburg Burnout Inventory (OBI). By focusing on two key dimensions—Exhaustion and Engagement—we explored the trends across gender and age groups. Here are the findings:\n\nGender Differences:\n\nThere were no significant differences in average Exhaustion or Engagement scores between genders.\nT-test proved our observation of the box plots, supporting the claim that there’s no significant difference between the two gender groups.\n\nAge Trends:\n\nExhaustion scores varied significantly across age groups, with noticeable peaks during early and late career stages. These patterns may reflect external stress sources, such as early career pressures or pre-retirement challenges.\nEngagement scores were generally stable but showed higher levels in younger age groups (specifically early 30s) and some fluctuations in older groups\n\nCombined Effects:\n\nInteraction plots again displays a lack of gender-based differences within most age groups. However, specific age ranges, such as late 20s and early 70s, exhibited distinct patterns, which can be a topic for further investigation.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conclusion</span>"
+    ]
+  },
+  {
+    "objectID": "conclusion.html#implications",
+    "href": "conclusion.html#implications",
+    "title": "5  Conclusion",
+    "section": "6.2 Implications",
+    "text": "6.2 Implications\nThe findings can be useful with different applications: - Targeted Interventions: - Younger employees might benefit from additional support, such as psychiatric sessions or stress management programs. - Older employees could benefit from tailored workplace policies, addressing work-life balance. - Gender-Inclusive Strategies: - Since no significant gender differences were identified, organizations can prioritize policies that target burnout as a universal issue instead of gender specific policies.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conclusion</span>"
+    ]
+  },
+  {
+    "objectID": "conclusion.html#limitations-and-future-work",
+    "href": "conclusion.html#limitations-and-future-work",
+    "title": "5  Conclusion",
+    "section": "6.3 Limitations and Future Work",
+    "text": "6.3 Limitations and Future Work\n\n6.3.1 Limitations:\n\nThe dataset is limited to Greek employees only, which may restrict the generalizability of findings to other populations or cultural contexts.\nThe analysis is based on survey responses, which means that self-reporting bias may be a problem.\nCertain age groups, particularly older employees, may have fewer data points, influencing the reliability of trends.\n\n\n\n6.3.2 Future Work:\n\nExpanded Dataset: Include data from other countries or industries to gain a broader understanding of burnout patterns.\nAdditional Factors: Incorporate variables like job role, work hours, or organizational policies to explore deeper relationships.\nTemporal Analysis: Examine burnout trends over time to identify changes or patterns related to external events (economic shifts, tec.).",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conclusion</span>"
+    ]
   }
 ]
